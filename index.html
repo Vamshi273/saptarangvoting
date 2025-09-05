@@ -5,61 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Saptarang Freshers Day Voting</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #f6d365, #fda085);
-  }
-  h1 {
-    text-align: center;
-    padding: 20px;
-    color: #333;
-  }
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 10px;
-  }
-  .card {
-    background: white;
-    border-radius: 12px;
-    padding: 10px;
-    text-align: center;
-    width: 180px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  .card img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 12px;
-  }
-  button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    background-color: #ff6b6b;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-  }
-  #admin-panel {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
+  body { font-family: Arial, sans-serif; margin:0; padding:0; background: linear-gradient(135deg, #f6d365, #fda085);}
+  h1 { text-align:center; padding:20px; color:#333; }
+  .container { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:10px; }
+  .card { background:white; border-radius:12px; padding:10px; text-align:center; width:180px; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
+  .card img { width:100%; height:250px; object-fit:cover; border-radius:12px; }
+  button { margin-top:10px; padding:8px 12px; border:none; border-radius:6px; background-color:#ff6b6b; color:white; font-weight:bold; cursor:pointer; }
+  button:disabled { background-color:#aaa; cursor:not-allowed; }
+  #admin-panel { max-width:500px; margin:20px auto; padding:20px; background:white; border-radius:12px; text-align:center; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
 </style>
 </head>
 <body>
@@ -77,14 +30,14 @@
   <button onclick="lockVoting()">Lock Voting</button>
   <button onclick="viewVotes()">View Votes</button>
   <button onclick="resetVotes()">Reset Votes</button>
-  <div id="admin-result" style="margin-top: 15px;"></div>
+  <div id="admin-result" style="margin-top:15px;"></div>
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
-  // ================= Firebase Config =================
+  // 🔹 Firebase Config
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_AUTH_DOMAIN",
@@ -98,25 +51,25 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // ================= Data =================
+  // 🔹 Candidate Data
   const males = [
-    {name:"Prabhas", img:"prabhas_latest_photos_2807170354_03.jpg"},
-    {name:"Appu", img:"517EDEYjsHL.jpg"},
-    {name:"Chiranjeevi", img:"https://via.placeholder.com/200x250?text=Vikram"},
-    {name:"Ramcharan", img:"MV5BZWY1NTQyMWItMWU2OS00NWMwLWFlN2MtMDZlYzEwZmU3MTYzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"}
+    {name:"Prabhas", img:"https://via.placeholder.com/200x250?text=Prabhas"},
+    {name:"Appu", img:"https://via.placeholder.com/200x250?text=Appu"},
+    {name:"Chiranjeevi", img:"https://via.placeholder.com/200x250?text=Chiranjeevi"},
+    {name:"Ramcharan", img:"https://via.placeholder.com/200x250?text=Ramcharan"}
   ];
 
   const females = [
-    {name:"Samantha", img:"samantha-ruth-prabhu-stills-photos-pictures-2008.jpg"},
-    {name:"Sai Pallavi", img:"HD-wallpaper-sai-pallavi-fidaa-love-story-naga-chaitanya-sai-pallavi-shekhar-kammula-tollywood.jpg"},
-    {name:"Sreelela", img:"Sreeleela-m-1.jpg"},
-    {name:"Kajal", img:"a4c87cf5b9871dd67ebc6df0627d000a.jpg"}
+    {name:"Samantha", img:"https://via.placeholder.com/200x250?text=Samantha"},
+    {name:"Sai Pallavi", img:"https://via.placeholder.com/200x250?text=Sai+Pallavi"},
+    {name:"Sreelela", img:"https://via.placeholder.com/200x250?text=Sreelela"},
+    {name:"Kajal", img:"https://via.placeholder.com/200x250?text=Kajal"}
   ];
 
   let votingLocked = false;
 
-  // ================= Create Cards =================
-  function createCards(list, containerId) {
+  // 🔹 Create Cards
+  function createCards(list, containerId){
     const container = document.getElementById(containerId);
     list.forEach(item => {
       const card = document.createElement('div');
@@ -124,44 +77,35 @@
       card.innerHTML = `
         <img src="${item.img}" alt="${item.name}">
         <h3>${item.name}</h3>
-        <button onclick="vote('${item.name}', '${containerId}')">Vote</button>
+        <button onclick="vote('${item.name}','${containerId}')">Vote</button>
       `;
       container.appendChild(card);
     });
   }
 
-  // ================= Voting Function =================
-  function vote(name, containerId) {
-    if(votingLocked) { 
-      alert("Voting is locked!"); 
-      return; 
-    }
-
+  // 🔹 Vote Function
+  function vote(name, containerId){
+    if(votingLocked){ alert("Voting is locked!"); return; }
     const category = containerId.includes("male") ? "male" : "female";
-
-    // Check if user already voted for this category
-    if(localStorage.getItem(category + "_voted")) {
-      alert(`You have already voted for ${category}!`);
-      return;
-    }
+    if(localStorage.getItem(category+"_voted")){ alert(`You have already voted for ${category}!`); return; }
 
     const voteRef = db.ref('votes/' + category + '/' + name);
-    voteRef.transaction(current => (current || 0) + 1, (error, committed) => {
-      if (committed) {
-        localStorage.setItem(category + "_voted", name); // mark as voted
+    voteRef.transaction(current => (current || 0) + 1, (error, committed, snapshot) => {
+      if(error){ console.error("Transaction failed:", error); alert("Vote failed!"); }
+      else if(!committed){ console.log("Vote not committed"); }
+      else{
+        localStorage.setItem(category+"_voted", name);
         alert(`Your vote for ${name} has been counted!`);
+        console.log(`New vote count for ${name}:`, snapshot.val());
       }
     });
   }
 
-  // ================= Admin Functions =================
-  function lockVoting() {
-    votingLocked = true;
-    alert("Voting has been locked!");
-  }
+  // 🔹 Admin Functions
+  function lockVoting(){ votingLocked = true; alert("Voting has been locked!"); }
 
-  function resetVotes() {
-    if(confirm("Are you sure you want to reset all votes?")) {
+  function resetVotes(){
+    if(confirm("Are you sure you want to reset all votes?")){
       db.ref('votes').set({male:{}, female:{}});
       localStorage.removeItem("male_voted");
       localStorage.removeItem("female_voted");
@@ -169,22 +113,18 @@
     }
   }
 
-  function viewVotes() {
+  function viewVotes(){
     db.ref('votes').once('value', snapshot => {
       const data = snapshot.val() || {male:{}, female:{}};
       let result = "<h3>Male Votes:</h3>";
-      for(let m of males) {
-        result += `${m.name}: ${data.male?.[m.name] || 0}<br>`;
-      }
+      for(let m of males){ result += `${m.name}: ${data.male?.[m.name] || 0}<br>`; }
       result += "<h3>Female Votes:</h3>";
-      for(let f of females) {
-        result += `${f.name}: ${data.female?.[f.name] || 0}<br>`;
-      }
+      for(let f of females){ result += `${f.name}: ${data.female?.[f.name] || 0}<br>`; }
       document.getElementById('admin-result').innerHTML = result;
     });
   }
 
-  // ================= Initialize =================
+  // 🔹 Initialize
   createCards(males, 'male-container');
   createCards(females, 'female-container');
 </script>
